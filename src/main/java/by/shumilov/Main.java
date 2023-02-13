@@ -30,15 +30,29 @@ public class Main {
         task13();
         task14();
         task15();
+        task16();
     }
 
     private static void task1() throws IOException {
         List<Animal> animals = Util.getAnimals();
+
+        List<List<Animal>> zoos = new ArrayList<>();
+
         animals.stream().filter(animal -> animal.getAge() >= 10 && animal.getAge() <= 20)
                 .sorted(Comparator.comparingInt(Animal::getAge))
-                .skip(14)
-                .limit(7)
-                .forEach(System.out::println);
+                .forEach(animal -> {
+                    if (zoos.isEmpty()) {
+                        zoos.add(new ArrayList<>());
+                        zoos.get(0).add(animal);
+                    } else if (zoos.get(zoos.size() - 1).size() % 7 != 0) {
+                        zoos.get(zoos.size() - 1).add(animal);
+                    } else {
+                        zoos.add(new ArrayList<>());
+                        zoos.get(zoos.size() - 1).add(animal);
+                    }
+                });
+
+        zoos.get(2).forEach(System.out::println);
     }
 
     private static void task2() throws IOException {
@@ -249,5 +263,40 @@ public class Main {
                                 + flower.getWaterConsumptionPerDay() * 365 * 5 * 1.39 / 1000)
                 .reduce(Double::sum)
                 .ifPresent(cost -> System.out.format("The cost of greenhouse maintenance: %.2f \n", cost));
+    }
+
+    private static void task16() throws IOException {
+        List<Customer> customers = Util.getCustomers();
+        HashMap<String, Integer> cityMap = new HashMap<>();
+
+        List<String> citiesWithThreeOrMoreCustomers = customers.stream()
+                .map(customer -> customer.getAddress().getCity())
+                .peek(s -> {
+                    if (cityMap.containsKey(s)) {
+                        cityMap.put(s, cityMap.get(s) + 1);
+                    } else {
+                        cityMap.put(s, 1);
+                    }
+                })
+                .filter(s -> cityMap.get(s) >= 3)
+                .distinct()
+                .toList();
+
+        customers.stream()
+                .filter(customer -> citiesWithThreeOrMoreCustomers
+                        .contains(customer.getAddress().getCity()))
+                .sorted(Comparator.<Customer, String>comparing(o -> o.getAddress().getCity())
+                        .thenComparing(o -> o.getAddress().getStreet())
+                        .thenComparing(Comparator.<Customer, String>comparing(customer ->
+                                customer.getAddress().getBuildingNumber()).reversed())
+                        .thenComparing(Customer::getLastName))
+                .forEach(x -> System.out.println(
+                        x.getFirstName() + " " +
+                                x.getLastName() + ", city: " +
+                                x.getAddress().getCity() + ", street: " +
+                                x.getAddress().getStreet() + ", " +
+                                x.getAddress().getBuildingNumber() + "-" +
+                                x.getAddress().getFlatNumber()
+                ));
     }
 }
