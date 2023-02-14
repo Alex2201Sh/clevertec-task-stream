@@ -9,6 +9,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Main {
@@ -33,25 +34,13 @@ public class Main {
 
     private static void task1() throws IOException {
         List<Animal> animals = Util.getAnimals();
-
-        List<List<Animal>> zoos = new ArrayList<>();
-
         animals.stream()
                 .filter(animal -> animal.getAge() >= 10 && animal.getAge() <= 20)
                 .sorted(Comparator.comparingInt(Animal::getAge))
-                .forEach(animal -> {
-                    if (zoos.isEmpty()) {
-                        zoos.add(new ArrayList<>());
-                        zoos.get(0).add(animal);
-                    } else if (zoos.get(zoos.size() - 1).size() % 7 != 0) {
-                        zoos.get(zoos.size() - 1).add(animal);
-                    } else {
-                        zoos.add(new ArrayList<>());
-                        zoos.get(zoos.size() - 1).add(animal);
-                    }
-                });
+                .skip(7 * 2)
+                .limit(7)
+                .forEach(System.out::println);
 
-        zoos.get(2).forEach(System.out::println);
     }
 
     private static void task2() throws IOException {
