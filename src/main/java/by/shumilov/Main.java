@@ -36,7 +36,8 @@ public class Main {
 
         List<List<Animal>> zoos = new ArrayList<>();
 
-        animals.stream().filter(animal -> animal.getAge() >= 10 && animal.getAge() <= 20)
+        animals.stream()
+                .filter(animal -> animal.getAge() >= 10 && animal.getAge() <= 20)
                 .sorted(Comparator.comparingInt(Animal::getAge))
                 .forEach(animal -> {
                     if (zoos.isEmpty()) {
@@ -57,14 +58,10 @@ public class Main {
         List<Animal> animals = Util.getAnimals();
         animals.stream()
                 .filter(animal -> "Japanese".equalsIgnoreCase(animal.getOrigin()))
-                .peek(animal -> {
-                    if ("Female".equalsIgnoreCase(animal.getGender())) {
-                        animal.setBread(animal
-                                .getBread()
-                                .toUpperCase(Locale.ROOT));
-                    }
-                })
-                .map(Animal::getBread)
+                .map(animal ->
+                        "Female".equalsIgnoreCase(animal.getGender()) ?
+                                animal.getBread().toUpperCase() :
+                                animal.getBread())
                 .forEach(System.out::println);
     }
 
@@ -195,10 +192,10 @@ public class Main {
         List<Car> rest = new ArrayList<>(List.copyOf(cars));
 
         List<Car> cars1 = Stream.concat(
-                cars.stream()
-                        .filter(car -> "Jaguar".equalsIgnoreCase(car.getCarMake())),
-                cars.stream()
-                        .filter(car -> "White".equalsIgnoreCase(car.getColor())))
+                        cars.stream()
+                                .filter(car -> "Jaguar".equalsIgnoreCase(car.getCarMake())),
+                        cars.stream()
+                                .filter(car -> "White".equalsIgnoreCase(car.getColor())))
                 .toList();
         rest.removeAll(cars1);
 
@@ -251,22 +248,22 @@ public class Main {
                 .mapToDouble(value -> value.stream()
                         .mapToInt(Car::getMass)
                         .sum())
-                .map(value -> value = value * 7.14 / 1000)
+                .map(value -> value * 7.14 / 1000)
                 .boxed()
                 .toList();
 
         countryCostsList.forEach(x ->
-                System.out.format("The cost of the echelon: %.2f \n", x));
+                System.out.format("The cost of the echelon: %.2f %n", x));
 
         countryCostsList.stream()
                 .reduce(Double::sum)
                 .ifPresent(cost ->
-                        System.out.format("The total cost: %.2f \n", cost));
+                        System.out.format("The total cost: %.2f %n", cost));
     }
 
     private static void task15() throws IOException {
         List<Flower> flowers = Util.getFlowers();
-        flowers.stream()
+        List<Flower> resultFlowersList = flowers.stream()
                 .sorted(Comparator
                         .comparing(Flower::getOrigin).reversed()                                    //sorted by origin reversed
                         .thenComparing(Flower::getPrice)                                            //sorted by price
@@ -277,28 +274,30 @@ public class Main {
                 .filter(flower -> flower.getFlowerVaseMaterial().contains("Glass") ||               //filter by vase material
                         flower.getFlowerVaseMaterial().contains("Aluminum") ||
                         flower.getFlowerVaseMaterial().contains("Steel"))
-                .peek(System.out::println)
+                .toList();
+
+        resultFlowersList.forEach(System.out::println);
+
+        resultFlowersList.stream()
                 .mapToDouble(flower ->                                                              //calculate total cost for every plant
                         flower.getPrice()
                                 + flower.getWaterConsumptionPerDay() * 365 * 5 * 1.39 / 1000)
                 .reduce(Double::sum)
                 .ifPresent(cost ->
-                        System.out.format("The cost of greenhouse maintenance: %.2f \n", cost));
+                        System.out.format("The cost of greenhouse maintenance: %.2f %n", cost));
     }
 
     private static void task16() throws IOException {
         List<Customer> customers = Util.getCustomers();
         HashMap<String, Integer> cityMap = new HashMap<>();
 
+        customers.stream()
+                .map(customer -> customer.getAddress().getCity())
+                .forEach(s -> cityMap.put(s, cityMap.containsKey(s) ?
+                        cityMap.get(s) + 1 : 1));
+
         List<String> citiesWithThreeOrMoreCustomers = customers.stream()
                 .map(customer -> customer.getAddress().getCity())
-                .peek(s -> {
-                    if (cityMap.containsKey(s)) {
-                        cityMap.put(s, cityMap.get(s) + 1);
-                    } else {
-                        cityMap.put(s, 1);
-                    }
-                })
                 .filter(s -> cityMap.get(s) >= 3)
                 .distinct()
                 .toList();
