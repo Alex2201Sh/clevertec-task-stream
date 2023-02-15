@@ -39,7 +39,7 @@ public class Main {
                 .sorted(Comparator.comparingInt(Animal::getAge))
                 .skip(7 * 2)
                 .limit(7)
-                .forEach(System.out::println);
+                .forEach(x -> System.out.println("task1: Animal for third zoo: " + x));
 
     }
 
@@ -51,7 +51,7 @@ public class Main {
                         "Female".equalsIgnoreCase(animal.getGender()) ?
                                 animal.getBread().toUpperCase() :
                                 animal.getBread())
-                .forEach(System.out::println);
+                .forEach(x -> System.out.println("task2: Animal from Japan: " + x));
     }
 
     private static void task3() throws IOException {
@@ -60,7 +60,7 @@ public class Main {
                 .map(Animal::getOrigin)
                 .distinct()
                 .filter(s -> s.startsWith("A"))
-                .forEach(System.out::println);
+                .forEach(x -> System.out.println("task3: country: " + x));
     }
 
     private static void task4() throws IOException {
@@ -68,7 +68,7 @@ public class Main {
         long femalesAnimals = animals.stream()
                 .filter(animal -> "Female".equalsIgnoreCase(animal.getGender()))
                 .count();
-        System.out.println(femalesAnimals);
+        System.out.println("task4: amount of female animals: " + femalesAnimals);
     }
 
     private static void task5() throws IOException {
@@ -76,7 +76,8 @@ public class Main {
         boolean anyMatchHungarian = animals.stream()
                 .filter(animal -> animal.getAge() >= 20 && animal.getAge() <= 30)
                 .anyMatch(animal -> "Hungarian".equalsIgnoreCase(animal.getOrigin()));
-        System.out.println(anyMatchHungarian);
+        System.out.println("task5: is any animal from Hungary: "
+                + String.valueOf(anyMatchHungarian).toUpperCase(Locale.ROOT));
     }
 
     private static void task6() throws IOException {
@@ -85,14 +86,16 @@ public class Main {
                 .allMatch(animal ->
                         "Female".equalsIgnoreCase(animal.getGender()) ||
                                 "male".equalsIgnoreCase(animal.getGender()));
-        System.out.println(isAllAnimalsMatchCondition);
+        System.out.println("task6: are all animals male and female: "
+                + String.valueOf(isAllAnimalsMatchCondition).toUpperCase(Locale.ROOT));
     }
 
     private static void task7() throws IOException {
         List<Animal> animals = Util.getAnimals();
         boolean isOriginOceania = animals.stream()
                 .noneMatch(animal -> "Oceania".equalsIgnoreCase(animal.getOrigin()));
-        System.out.println(isOriginOceania);
+        System.out.println("task7: there are no animals from Oceania: "
+                + String.valueOf(isOriginOceania).toUpperCase(Locale.ROOT));
     }
 
     private static void task8() throws IOException {
@@ -102,7 +105,7 @@ public class Main {
                 .limit(100)
                 .mapToInt(Animal::getAge)
                 .max()
-                .ifPresent(System.out::println);
+                .ifPresent(x -> System.out.println("task8: age of the oldest animal: " + x));
     }
 
     private static void task9() throws IOException {
@@ -111,7 +114,7 @@ public class Main {
                 .map(Animal::getBread)
                 .map(String::toCharArray)
                 .min(Comparator.comparingInt(o -> o.length))
-                .ifPresent(chars -> System.out.println(chars.length));
+                .ifPresent(chars -> System.out.println("task9: the shortest array length: " + chars.length));
     }
 
     private static void task10() throws IOException {
@@ -119,7 +122,7 @@ public class Main {
         int sumOfAges = animals.stream()
                 .mapToInt(Animal::getAge)
                 .sum();
-        System.out.println(sumOfAges);
+        System.out.println("task10: the sum of ages of all animals: " + sumOfAges);
     }
 
     private static void task11() throws IOException {
@@ -128,7 +131,7 @@ public class Main {
                 .filter(animal -> "Indonesian".equalsIgnoreCase(animal.getOrigin()))
                 .mapToInt(Animal::getAge)
                 .average()
-                .ifPresent(System.out::println);
+                .ifPresent(x -> System.out.println("task11: average age of animals from Indonesia: " + x));
     }
 
     private static void task12() throws IOException {
@@ -144,7 +147,7 @@ public class Main {
                                         .isBefore(person.getDateOfBirth()))
                 .sorted(Comparator.comparingInt(Person::getRecruitmentGroup))
                 .limit(200)
-                .forEach(System.out::println);
+                .forEach(x -> System.out.println("task12: French legion: " + x));
     }
 
     private static void task13() throws IOException {
@@ -173,7 +176,7 @@ public class Main {
                                 .flatMap(personFunction)
                                 .filter(isOlderThen65.negate().and(isYoungerThen18.negate())))
                 .limit(500)
-                .forEach(System.out::println);
+                .forEach(x -> System.out.println("task13: evacuation list: " + x));
     }
 
     private static void task14() throws IOException {
@@ -242,12 +245,12 @@ public class Main {
                 .toList();
 
         countryCostsList.forEach(x ->
-                System.out.format("The cost of the echelon: %.2f %n", x));
+                System.out.format("task14a:The cost of the echelon: %.2f %n", x));
 
         countryCostsList.stream()
                 .reduce(Double::sum)
                 .ifPresent(cost ->
-                        System.out.format("The total cost: %.2f %n", cost));
+                        System.out.format("task14b:The total cost: %.2f %n", cost));
     }
 
     private static void task15() throws IOException {
@@ -265,7 +268,7 @@ public class Main {
                         flower.getFlowerVaseMaterial().contains("Steel"))
                 .toList();
 
-        resultFlowersList.forEach(System.out::println);
+        resultFlowersList.forEach(x -> System.out.println("task15a: chosen plant:" + x));
 
         resultFlowersList.stream()
                 .mapToDouble(flower ->                                                              //calculate total cost for every plant
@@ -273,7 +276,7 @@ public class Main {
                                 + flower.getWaterConsumptionPerDay() * 365 * 5 * 1.39 / 1000)
                 .reduce(Double::sum)
                 .ifPresent(cost ->
-                        System.out.format("The cost of greenhouse maintenance: %.2f %n", cost));
+                        System.out.format("task15b: The cost of greenhouse maintenance: %.2f %n", cost));
     }
 
     private static void task16() throws IOException {
@@ -300,7 +303,8 @@ public class Main {
                                 customer.getAddress().getBuildingNumber()).reversed())
                         .thenComparing(Customer::getLastName))
                 .forEach(x -> System.out.println(
-                        x.getFirstName() + " " +
+                        "task16: chosen customer: " +
+                                x.getFirstName() + " " +
                                 x.getLastName() + ", city: " +
                                 x.getAddress().getCity() + ", street: " +
                                 x.getAddress().getStreet() + ", " +
